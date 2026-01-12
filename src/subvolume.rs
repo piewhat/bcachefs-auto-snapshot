@@ -28,15 +28,15 @@ pub enum Freq {
 
 impl Subvolume {
     pub fn process(&self) -> Result<(), SubVolumeError> {
-        let mut snapshots = Vec::new();
         self.make_snapshot_dir()?;
+        let mut snapshots = Vec::new();
         self.load_snapshots(&mut snapshots)?;
 
-        for (freq, count) in &self.frequencies {
-            if freq.preferred_time() || !snapshots.iter().any(|s| &s.0 == freq) || true {
+        for (freq, snaps_to_keep) in &self.frequencies {
+            if freq.preferred_time() || !snapshots.iter().any(|s| &s.0 == freq) {
                 println!("  Processing {} snapshots", freq.as_str());
                 self.snapshot(freq, &mut snapshots)?;
-                self.prune(freq, &snapshots, count)?;
+                self.prune(freq, &snapshots, snaps_to_keep)?;
             }
         }
 
