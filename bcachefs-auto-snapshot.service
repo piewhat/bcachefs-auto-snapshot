@@ -1,0 +1,10 @@
+[Unit]
+Description=bcachefs automatic snapshot service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/bcachefs-auto-snapshot
+
+[Install]
+WantedBy=multi-user.target
