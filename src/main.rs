@@ -2,6 +2,8 @@ mod subvolume;
 
 use chrono::{DateTime, Local};
 use clap::Parser;
+use derive_more::Display;
+use exn::{Result, ResultExt};
 use std::{fs, path::PathBuf, sync::LazyLock};
 use subvolume::*;
 
@@ -19,12 +21,28 @@ struct Args {
     config: PathBuf,
 }
 
-fn main() {
-    let args = Args::parse();
-    let config = fs::read_to_string(args.config).unwrap();
-    let subvolumes: Vec<Subvolume> = ron::from_str(&config).unwrap();
+#[derive(Debug, Display)]
+pub struct MainError(String);
+impl std::error::Error for MainError {}
 
-    for subvolume in subvolumes {
-        subvolume.process();
+fn main() -> Result<(), MainError> {
+    let args = Args::parse();
+    let config = fs::read_to_string(&args.config)
+        .or_raise(|| MainError(format!("Reading config file: '{}'", args.config.display(),)))?;
+    let subvolumes: Vec<Subvolume> = ron::from_str(&config)
+        .or_raise(|| MainError(format!("Parsing config file: '{}'", args.config.display(),)))?;
+
+    for subvolume in &subvolumes {
+        println!("Processing subvolume at '{}'", subvolume.path.display());
+        subvolume.process().or_raise(|| {
+            MainError(format!(
+                "Processing subvolume at '{}'",
+                subvolume.path.display()
+            ))
+        })?;
     }
+
+    println!("Processed {} subvolumes", subvolumes.len());
+
+    Ok(())
 }
