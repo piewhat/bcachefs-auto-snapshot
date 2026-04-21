@@ -43,14 +43,26 @@ impl Subvolume {
         Ok(())
     }
 
+    pub fn get_snapshots_path(&self) -> Result<PathBuf, SubVolumeError> {
+        let error = || {
+            SubVolumeError(format!(
+                "Determining snapshots path for: '{}'",
+                self.path.display()
+            ))
+        };
+        let parent = self.path.parent().ok_or_raise(error)?;
+        let file_name = self.path.file_name().ok_or_raise(error)?;
+        Ok(parent.join(".snapshots").join(file_name))
+    }
+
     pub fn make_snapshot_dir(&self) -> Result<(), SubVolumeError> {
+        let snapshots_path = self.get_snapshots_path()?;
         let error = || {
             SubVolumeError(format!(
                 "Creating snapshots directory: '{}'",
                 self.path.display()
             ))
         };
-        let snapshots_path = self.path.join(".snapshots");
         fs::create_dir_all(&snapshots_path).or_raise(error)?;
 
         Ok(())
@@ -60,7 +72,7 @@ impl Subvolume {
         &self,
         snapshots: &mut Vec<(Freq, String)>,
     ) -> Result<(), SubVolumeError> {
-        let snapshots_path = self.path.join(".snapshots");
+        let snapshots_path = self.get_snapshots_path()?;
         let error = || {
             SubVolumeError(format!(
                 "Reading snapshots directory: '{}'",
@@ -92,7 +104,8 @@ impl Subvolume {
         let now = Local::now();
         let timestamp_str = now.format("%Y-%m-%d-%H%M%S").to_string();
         let snapshot_name = format!("{}_{}", timestamp_str, freq.as_str());
-        let snapshot_path = self.path.join(".snapshots").join(&snapshot_name);
+        let snapshots_path = self.get_snapshots_path()?;
+        let snapshot_path = snapshots_path.join(&snapshot_name);
         println!("    Creating snapshot: '{}'", snapshot_path.display());
         let status = Command::new("bcachefs")
             .arg("subvolume")
@@ -130,10 +143,11 @@ impl Subvolume {
 
         if snapshots.len() > *snaps_to_keep {
             let error = || SubVolumeError(format!("Deleting snapshot: '{}'", self.path.display()));
+            let snapshots_path = self.get_snapshots_path()?;
             snapshots.sort_by(compare_snapshots);
             let to_remove = snapshots.len() - snaps_to_keep;
             for snapshot_name in &snapshots[..to_remove] {
-                let snapshot_path = self.path.join(".snapshots").join(snapshot_name);
+                let snapshot_path = snapshots_path.join(snapshot_name);
                 println!("    Removing old snapshot: '{}'", snapshot_path.display());
                 let status = Command::new("bcachefs")
                     .arg("subvolume")

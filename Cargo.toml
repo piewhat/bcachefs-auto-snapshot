@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-chrono = "0.4.42"
-clap = { version = "4.5.54", features = ["derive"] }
+chrono = "0.4.44"
+clap = { version = "4.6.1", features = ["derive"] }
 derive_more = { version = "2.1.1", features = ["display"] }
-exn = "0.2.1"
-ron = "0.12.0"
+exn = "0.3.0"
+ron = "0.12.1"
 serde = { version = "1.0.228", features = ["derive"] }
