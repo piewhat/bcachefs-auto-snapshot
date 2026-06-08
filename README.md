@@ -11,6 +11,12 @@ Configure subvolumes in `/etc/bcachefs-auto-snapshot.ron`:
     (path: "/path/to/subvolume", frequencies: [(Hourly, 24), (Daily, 7)]),
 ]
 ```
+### Frequencies
+- Frequently (15 minutes)
+- Hourly
+- Daily
+- Monthly
+- Yearly
 
 ## Install
 ```sh
