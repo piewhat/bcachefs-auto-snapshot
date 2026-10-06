@@ -30,3 +30,23 @@ sudo cp ./target/release/bcachefs-auto-snapshot /usr/local/bin/bcachefs-auto-sna
 sudo cp bcachefs-auto-snapshot.{service,timer} /etc/systemd/system/
 sudo systemctl enable --now bcachefs-auto-snapshot.timer
 ```
+
+## Build a debian package
+
+Debian can install all build prerequisites declared by the package and produce a
+`.deb` directly from the checkout:
+
+```sh
+sudo apt update
+sudo apt build-dep .
+dpkg-buildpackage --build=binary --no-sign
+sudo apt install ../bcachefs-auto-snapshot_0.1.0-1_*.deb
+```
+
+The package installs `bcachefs-tools`, the example configuration, and the
+systemd service and timer. The timer is deliberately not enabled on install;
+edit `/etc/bcachefs-auto-snapshot.ron`, then enable it:
+
+```sh
+sudo systemctl enable --now bcachefs-auto-snapshot.timer
+```

@@ -1,4 +1,5 @@
 [
-    (path: "/realistic_example", frequencies: [(Hourly, 4), (Daily, 3)]),
-    (path: "/example", frequencies: [(Frequently, 1), (Hourly, 1), (Daily, 1), (Weekly, 1), (Monthly, 1), (Yearly, 1)]),
+    // Add one entry for each subvolume to snapshot:
+    // (path: "/path/to/subvolume", frequencies: [(Hourly, 24), (Daily, 7)]),
+    // (path: "/example", frequencies: [(Frequently, 1), (Hourly, 1), (Daily, 1), (Weekly, 1), (Monthly, 1), (Yearly, 1)]),
 ]
