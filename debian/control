@@ -1,0 +1,23 @@
+Source: bcachefs-auto-snapshot
+Section: admin
+Priority: optional
+Maintainer: Thomas Grimm <Piewhat@protonmail.com>
+Build-Depends:
+ cargo,
+ debhelper-compat (= 13),
+ rustc
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+Homepage: https://github.com/piewhat/bcachefs-auto-snapshot
+Vcs-Browser: https://github.com/piewhat/bcachefs-auto-snapshot
+Vcs-Git: https://github.com/piewhat/bcachefs-auto-snapshot.git
+
+Package: bcachefs-auto-snapshot
+Architecture: any
+Depends:
+ bcachefs-tools,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: automatic snapshot tool for bcachefs subvolumes
+ Creates read-only bcachefs snapshots on a systemd timer and prunes old
+ snapshots according to configurable retention frequencies.

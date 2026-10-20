@@ -1,0 +1,4 @@
+target/release/bcachefs-auto-snapshot usr/bin/
+bcachefs-auto-snapshot.ron etc/
+bcachefs-auto-snapshot.service usr/lib/systemd/system/
+bcachefs-auto-snapshot.timer usr/lib/systemd/system/

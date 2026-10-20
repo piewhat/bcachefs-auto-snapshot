@@ -1,0 +1,5 @@
+bcachefs-auto-snapshot (0.1.0-1) unstable; urgency=medium
+
+  * Add debian package build support.
+
+ -- Thomas Grimm <Piewhat@protonmail.com>  Tue, 06 Oct 2026 00:00:00 +0100
